@@ -125,7 +125,7 @@ _carthistoire_install()
     # Install Dojo
     dojo_version=1.5.0
     [ -d /usr/share/javascript/dojo-release-${dojo_version}-src ] || {
-        cd /usr/share/javascript
+        cd /usr/share/>javascript
 
         url=http://download.dojotoolkit.org/release-${dojo_version}/dojo-release-${dojo_version}-src.tar.gz
         nef_log "Downloading: $url"
@@ -155,6 +155,7 @@ _carthistoire_setup()
         mkdir $rootdir
         curl -L https://github.com/jfgigand/carthistoire-web-app/archive/master.tar.gz \
             | tar xz --strip-components=1 -C $rootdir
+
     fi
 
     if [ ! -h $rootdir/app/instance ]; then
@@ -165,7 +166,12 @@ _carthistoire_setup()
         echo CHOWNNNNNNNN
         chown -R www-data:www-data $rootdir/app/{cache,logs}
     fi
-    # sudo -u www-data $rootdir
+    if [ ! -d $rootdir/app/cache/public/x ]; then
+        cd $rootdir
+        sudo -u www-data app/console zig:install:update-public
+        sudo -u www-data app/console zig:install:build-openlayers
+        sudo -u www-data app/console zig:install:run-shrinksafe
+    fi
 
     # "carthistoire" PostgreSQL account
     if ! echo '\dg' | sudo -u postgres psql | grep -q carthistoire; then
