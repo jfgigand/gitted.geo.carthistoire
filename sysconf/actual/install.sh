@@ -135,6 +135,12 @@ _carthistoire_setup()
     # }
 
     local rootdir=/var/lib/carthistoire
+    if [ ! -d $rootdir ]; then
+        mkdir $rootdir
+        curl -L https://github.com/jfgigand/carthistoire-web-app/archive/master.tar.gz \
+            | tar xz --strip-components=1 -C $rootdir
+    fi
+
     if [ ! -h $rootdir/app/instance ]; then
         ln -s instances/prod $rootdir/app/instance
     fi
