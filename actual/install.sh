@@ -90,41 +90,44 @@ _carthistoire_install()
     # Clean-up after package install
     rm -f /etc/apache2/sites-enabled/000-default
 
-    # # Install system-wide Swift 4.0.6 (PHP Mailer)
-    # if ! pear list -c pear.swiftmailer.org | grep -q " 4.0.6 "; then
-    #     pear channel-discover pear.swiftmailer.org
-    #     pear install swift/Swift-4.0.6
-    # fi
+    # Install system-wide Swift 4.0.6 (PHP Mailer)
+    if ! pear list -c pear.swiftmailer.org | grep -q " 4.0.6 "; then
+        pear channel-discover pear.swiftmailer.org
+        pear install swift/Swift-4.0.6
+    fi
 
-    # # Install OpenLayers 2.11rc3
-    # [ -d /usr/share/javascript/openlayers-2.11rc3 ] || {
-    #     mkdir -p /usr/share/javascript/openlayers-2.11rc3 || nef_fatal "could not mkdir"
-    #     # OLD URL: url=http://openlayers.org/download/OpenLayers-2.11-rc3.tar.gz
-    #     url=https://github.com/openlayers/openlayers/archive/release-2.11-rc3.tar.gz
-    #     curl --location "$url" \
-    #         | tar xzv --strip-components=1 -C /usr/share/javascript/openlayers-2.11rc3 \
-    #         --exclude=doc --exclude=apidoc_config --exclude=examples \
-    #         --exclude=doc_config --exclude=tests \
-    #         || nef_fatal "could not download or extract OpenLayers archive from: $url"
-    # }
+    # Install OpenLayers 2.10
+    ol_version=2.10
+    [ -d /usr/share/javascript/openlayers-${ol_version} ] || {
+        mkdir -p /usr/share/javascript/openlayers-${ol_version} || nef_fatal "could not mkdir"
+        url=https://github.com/openlayers/openlayers/releases/download/release-${ol_version}/OpenLayers-${ol_version}.tar.gz
+        curl --location "$url" \
+            | tar xzv --strip-components=1 -C /usr/share/javascript/openlayers-${ol_version} \
+            --exclude=doc --exclude=apidoc_config --exclude=examples \
+            --exclude=doc_config --exclude=tests \
+            || nef_fatal "could not download or extract OpenLayers archive from: $url"
+    }
 
-    # # Install Proj4JS 1.0.1
-    # [ -d /usr/share/javascript/proj4js-1.0.1 ] || {
-    # cd /tmp
-    # curl http://trac.osgeo.org/proj4js/raw-attachment/wiki/Download/proj4js-1.0.1.zip >proj4js-1.0.1.zip \
-    #     && unzip proj4js-1.0.1.zip \
-    #     && mv proj4js /usr/share/javascript/proj4js-1.0.1 \
-    #     && rm -f /tmp/proj4js-1.0.1.zip \
-    #     || nef_fatal "could not download or install proj4js"
-    # }
+    # Install Proj4JS 1.0.1
+    proj4js_version=1.0.1
+    [ -d /usr/share/javascript/proj4js-${proj4js_version} ] || {
+    cd /tmp
+    curl http://trac.osgeo.org/proj4js/raw-attachment/wiki/Download/proj4js-${proj4js_version}.zip >proj4js-${proj4js_version}.zip \
+        && unzip proj4js-${proj4js_version}.zip \
+        && mv proj4js /usr/share/javascript/proj4js-${proj4js_version} \
+        && rm -f /tmp/proj4js-${proj4js_version}.zip \
+        || nef_fatal "could not download or install proj4js"
+    }
 
-    # # Install dojo-1.5.3-src
-    # [ -d /usr/share/javascript/dojo-release-1.5.3-src ] || {
-    #     cd /usr/share/javascript
-    #     curl http://download.dojotoolkit.org/release-1.5.3/dojo-release-1.5.3-src.tar.gz \
-    #         | tar xzv --no-same-owner --exclude=tests --exclude=demos --exclude=docscripts --exclude=doh \
-    #         || nef_fatal "could not download or extract the dojo-release-1.5.3-src archive"
-    # }
+    # Install Dojo
+    dojo_version=1.5.0
+    [ -d /usr/share/javascript/dojo-release-${dojo_version}-src ] || {
+        cd /usr/share/javascript
+
+        curl http://download.dojotoolkit.org/release-${dojo_version}/dojo-release-${dojo_version}-src.tar.gz \
+            | tar xzv --no-same-owner --exclude=tests --exclude=demos --exclude=docscripts --exclude=doh \
+            || nef_fatal "could not download or extract the dojo-release-${dojo_version}-src archive"
+    }
 }
 
 _carthistoire_setup()
