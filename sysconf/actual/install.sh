@@ -8,7 +8,7 @@ _carthistoire_install()
 
     # HTTPd and PHP
     _packages="$_packages apache2-mpm-prefork libapache2-mod-php5"
-    _packages="$_packages php5-cli php-pear"
+    _packages="$_packages php5-cli php-pear php5-sqlite"
 
     # Databases
     _packages="$_packages postgresql-9.1 postgresql-9.1-postgis"
@@ -93,6 +93,7 @@ _carthistoire_install()
     if ! pear list -c pear.swiftmailer.org | grep -q " 4.0.6 "; then
         pear channel-discover pear.swiftmailer.org
         pear install swift/Swift-4.0.6
+        ln -s php/swift_init.php /usr/share/swift_init.php # an old bug
     fi
 
     # Install OpenLayers 2.10
@@ -100,6 +101,7 @@ _carthistoire_install()
     [ -d /usr/share/javascript/openlayers-${ol_version} ] || {
         mkdir -p /usr/share/javascript/openlayers-${ol_version} || nef_fatal "could not mkdir"
         url=https://github.com/openlayers/openlayers/releases/download/release-${ol_version}/OpenLayers-${ol_version}.tar.gz
+        nef_log "Downloading: $url"
         curl --location "$url" \
             | tar xzv --strip-components=1 -C /usr/share/javascript/openlayers-${ol_version} \
             --exclude=doc --exclude=apidoc_config --exclude=examples \
@@ -111,7 +113,9 @@ _carthistoire_install()
     proj4js_version=1.0.1
     [ -d /usr/share/javascript/proj4js-${proj4js_version} ] || {
     cd /tmp
-    curl http://trac.osgeo.org/proj4js/raw-attachment/wiki/Download/proj4js-${proj4js_version}.zip >proj4js-${proj4js_version}.zip \
+    url=http://trac.osgeo.org/proj4js/raw-attachment/wiki/Download/proj4js-${proj4js_version}.zip
+        nef_log "Downloading: $url"
+    curl "$url" >proj4js-${proj4js_version}.zip \
         && unzip proj4js-${proj4js_version}.zip \
         && mv proj4js /usr/share/javascript/proj4js-${proj4js_version} \
         && rm -f /tmp/proj4js-${proj4js_version}.zip \
@@ -123,10 +127,20 @@ _carthistoire_install()
     [ -d /usr/share/javascript/dojo-release-${dojo_version}-src ] || {
         cd /usr/share/javascript
 
-        curl http://download.dojotoolkit.org/release-${dojo_version}/dojo-release-${dojo_version}-src.tar.gz \
-            | tar xzv --no-same-owner --exclude=tests --exclude=demos --exclude=docscripts --exclude=doh \
+        url=http://download.dojotoolkit.org/release-${dojo_version}/dojo-release-${dojo_version}-src.tar.gz
+        nef_log "Downloading: $url"
+        curl "$url" \
+            | tar xzv \
+            --no-same-owner --exclude=tests --exclude=demos --exclude=docscripts --exclude=doh \
             || nef_fatal "could not download or extract the dojo-release-${dojo_version}-src archive"
+        ln -s dojo-release-${dojo_version}-src /usr/share/javascript/dojo-release-${dojo_version}
     }
+
+    # Custom fixes
+    if [ ! -f /var/lib/carthistoire/vendor/ploomap-client/src/geonef/ploomap/copyright.txt ]; then
+        echo "// By Jean-Francois Gigand <jf@geonef.fr>, 2010-2014" \
+            >/var/lib/carthistoire/vendor/ploomap-client/src/geonef/ploomap/copyright.txt
+    fi
 }
 
 _carthistoire_setup()
