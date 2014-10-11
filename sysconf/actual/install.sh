@@ -8,8 +8,7 @@ _carthistoire_install()
 
     # HTTPd and PHP
     _packages="$_packages apache2-mpm-prefork libapache2-mod-php5"
-    _packages="$_packages php5-cli"
-    # _packages="$_packages php5-cli php-pear"
+    _packages="$_packages php5-cli php-pear"
 
     # Databases
     _packages="$_packages postgresql-9.1 postgresql-9.1-postgis"
@@ -20,8 +19,8 @@ _carthistoire_install()
     # _packages="$_packages libgdal1 gdal-bin"
 
     # Misc
-    # _packages="$_packages curl bzip2 unzip"
-    # _packages="$_packages openjdk-7-jre-headless" # for shrinksafe JS builds
+    _packages="$_packages curl bzip2 unzip"
+    _packages="$_packages openjdk-7-jre-headless" # for shrinksafe JS builds
 
     # system
     _packages="$_packages rsyslog sudo git"
