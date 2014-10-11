@@ -1,0 +1,7 @@
+# Common definitions to /etc/gitted/sync/*.{import,export}      -*- shell-script -*-
+
+export GITTED_POSTGRESQL_DATABASE=carthistoire
+export GITTED_POSTGRESQL_USER=carthistoire
+# export GITTED_MONGODB_DATABASE=carthistoire_prod
+# export GITTED_MONGODB_FORMAT=json
+# export GITTED_MONGODB_EXPORT_FORMAT=json
